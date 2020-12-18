@@ -1,0 +1,84 @@
+\documentclass[aps,prl,twocolumn,superscriptaddress]{revtex4-1}
+%\documentclass[aps,prl,preprint,superscriptaddress]{revtex4-1}
+%\documentclass[aps,prl,reprint,groupedaddress]{revtex4-1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Some things to consider while writing:
+%
+%  - We should agree on one notation to distinguish between the Rb hyperfine basis and the S = 1 basis. I've regularly found myself using |1, 1> meaning |S = 1, m_S = 1>, but this could also be interpreted as |F = 1, m_F = 1>. My suggestion is that we reserve |A> and |B> for the two hyperfine spin components since they change depending on whether we use u > 0 or u < 0, and that we maybe use the double arrows to refer to the spin basis (|⇑>).
+%  - For general notation matters see the Physical Review Styleguide: https://cdn.journals.aps.org/files/styleguide-pr.pdf
+%
+
+
+
+%  - In terms of content:
+%       * During the time evolution we evolve into an entangled state. How do we mention this?
+%       * To what extent do we talk about thermalization in the spin sector?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{blindtext}
+\usepackage{printlen}
+\usepackage{hyperref}
+\usepackage{braket}
+\usepackage{todonotes}
+\uselengthunit{in}
+
+\newcounter{comment}
+\newcommand{\comment}[2][]{\todo[color=red!100!green!33, #1]{#2}}
+\definecolor{myellow}{rgb}{1., 1., 0.6}
+\newcommand{\note}[2][]{\todo[color=myellow, #1]{#2}}
+
+
+
+\begin{document}
+
+\title{Quantum Simulation of Spin-pairing Dynamics with Two-component Bosons in Doubly-occupied Lattice Sites}
+% ?? Alternative, throwing in some buzzwords: Quantum Simulation of Superexchange-driven Nonequilibrium Dynamics in the $S = 1$ Heisenberg model
+            
+\author{BEC4}
+\affiliation{Research Laboratory of Electronics, MIT-Harvard Center for Ultracold Atoms, Department of Physics, Massachusetts Institute of Technology, Cambridge, Massachusetts 02139, USA}
+
+\date{\today}
+
+\begin{abstract}
+Low-energy physics of doubly-occupied lattice sites with two-component bosons can be described by an anisotropic spin-1 Heisenberg model, in which the exchange term is isotropic and an uniaxial anistropy term proportional to $(S_z)^2$ is added. In this Letter, we initialize and evolve in time a spin-rotated state prepared from spin-polarized Mott-insulating and observe that the average pairing between two different components evolves according to dynamics predicted by the anisotropic spin-1 Heisenberg model. In particular, we predict and observe that the change in the average pairing shows a resonant behavior. This behavior can be qualitatively described by a simple two-level picture. 
+\end{abstract}
+
+\maketitle
+
+Outline:
+\begin{itemize}
+    \item Introduction: spin models, anisotropic spin-1 Heisenberg Hamiltonian
+    \item Idealized two-site model, nonequilibrium dynamics, thermalization
+    \item Generalizing to many sites (hammer home the message that the initial behavior is described by $J$ between nearest-neighbors).
+    \item Experimental setup \& results
+\end{itemize}
+
+Potential sections for supplemental material:
+\begin{itemize}
+    \item Further details on the two-site toy model
+    \item Background on doublon statistics reconstruction (Feshbach detection)
+    \item Mention noise removal algorithm?
+    \item Details of MPS calculation
+    \item Derivation of anisotropic spin-1 effective Hamiltonian
+\end{itemize}
+
+Nomenclature
+\begin{itemize}
+    \item ``nonlinear-u term'': it seems ``uniaxial single-ion anisotropy'' is a oft-used term in condensed matter physics \cite{WANG20091904, He2007}.
+\end{itemize}
+
+Some papers that might be useful while we're figuring out how we're building on previous work:
+\begin{itemize}
+    \item `Out-of-equilibrium quantum magnetism and thermalization in a spin-3 many-body dipolar lattice system' \cite{Lepoutre2019}. Here they look at spin dynamics implemented using the dipolar interaction between Cr atoms. It maps onto an \emph{XXZ} Heisenberg model. They discuss entanglement generation, which may be of interest if we choose to mention that.
+    
+    \item `Nonequilibrium Quantum Magnetism in a Dipolar Lattice Gas' \cite{dePaz2013}. An older paper by the same group where they use a lattice gas to explore out-of-equilibrium dynamics in the \emph{t-J} model using the same platform.
+    
+    \item In case we're looking for a wider context to our Hamiltonian: `Magnetism and the effect of anisotropy with a one-dimensional monatomic chain of cobalt using a Monte Carlo simulation' \cite{He2007}. They use a Hamiltonian that's very similar to ours to understand the physics of ferromagnetic one-dimensional chains of Co atoms deposited on a substrate.
+\end{itemize}
+\bibliography{spdf_oscillation.bib}
+\end{document}
+

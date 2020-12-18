@@ -1,0 +1,93 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.optimize import curve_fit
+from matplotlib import rc
+from matplotlib.offsetbox import AnchoredText
+
+fig, ax = plt.subplots(2, 1, figsize = (3.4, 3.5), sharex = True)
+
+
+### Data extraction and plotting
+## Positive u plot
+expdat1 = np.load('20201210-pos-u-hold-70-ms-scan-lattice.npz')
+simdat = np.load('spdf-11-10-pair-vary-hold-lattice-8-to-20Er.npz')
+
+V0se1, spdfse1, spdferr1, _, _ = [expdat1[x] for x in expdat1]
+V0ss, timess, spdfss = [simdat[x] for x in simdat]
+
+keepPoints = (V0ss >= 8)
+V0ss = V0ss[keepPoints]
+timess = timess[keepPoints]
+spdfss = spdfss[keepPoints]
+
+rmPoints = np.logical_not(V0se1[0] < 8.5)
+V0se1 = V0se1[0][rmPoints]
+spdfse1 = spdfse1[0][rmPoints]
+spdferr1 = spdferr1[0][rmPoints]
+
+ax[0].errorbar(V0se1, spdfse1, spdferr1, marker = 'o', ls = 'none', ms = 3, elinewidth = 1, color = 'k')
+
+holdtime = 70.
+sel_spdf = np.zeros_like(V0ss)
+for i, V0 in enumerate(V0ss):
+    ind = np.argmin(np.abs( timess[i] - holdtime ))
+    sel_spdf[i] = spdfss[i][ind]
+
+ax[0].plot(V0ss, sel_spdf, color = 'k', label = 'Simulation', lw = 1)
+
+## Negative u plot
+expdat1 = np.load('20201130-neg-u-hold-25-ms-scan-lattice.npz')
+#expdat1 = np.load('20201210-neg-u-hold-25-ms-scan-lattice.npz')
+simdat = np.load('spdf-11-1m1-pair-vary-hold-lattice-8-to-20Er.npz')
+
+V0se1, spdfse1, spdferr1, _, _ = [expdat1[x] for x in expdat1]
+V0ss, timess, spdfss = [simdat[x] for x in simdat]
+
+ax[1].errorbar(V0se1[0], spdfse1[0], spdferr1[0], marker = 'o', ls = 'none', ms = 3, elinewidth = 1, color = 'k')
+
+holdtime = 25.
+sel_spdf = np.zeros_like(V0ss)
+for i, V0 in enumerate(V0ss):
+    ind = np.argmin(np.abs( timess[i] - holdtime ))
+    sel_spdf[i] = spdfss[i][ind]
+
+ax[1].plot(V0ss, sel_spdf, color = 'k', label = 'Simulation', lw = 1)
+
+
+### Plot formatting
+ax[0].set_xlim([7.5, 20.5])
+ax[0].set_ylabel("SPDF", fontsize = 10)
+ax[0].tick_params(labelsize = 8)
+ax[0].set_ylim([0.41, 0.7])
+ax[0].set_facecolor([0.98, 0.98, 0.98])
+
+at = AnchoredText("$D/J > 0$",
+                  prop=dict(size=8), frameon=True,
+                  loc='upper left',
+                  )
+at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
+at.patch.set_facecolor([1., 1., 1., 0.6])
+ax[0].add_artist(at)
+
+
+ax[1].set_xlim([7.5, 20.5])
+ax[1].set_xlabel("Lattice depth ($E_R$)")
+ax[1].set_ylabel("SPDF", fontsize = 10)
+ax[1].tick_params(labelsize = 8)
+ax[1].set_ylim([0.21, 0.55])
+ax[1].set_facecolor([0.98, 0.98, 0.98])
+
+at = AnchoredText("$D/J < 0$",
+                  prop=dict(size=8), frameon=True,
+                  loc='upper left',
+                  )
+at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
+at.patch.set_facecolor([1., 1., 1., 0.6])
+ax[1].add_artist(at)
+
+
+
+plt.tight_layout()
+fname = "scan-lattice-depth-combined"
+plt.savefig(fname + ".pdf")
+#plt.savefig(fname + ".png")

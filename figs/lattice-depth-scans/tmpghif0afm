@@ -1,0 +1,42 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.optimize import curve_fit
+from matplotlib import rc
+
+expdat1 = np.load('20201210-pos-u-hold-70-ms-scan-lattice.npz')
+simdat = np.load('spdf-11-10-pair-vary-hold-lattice-8-to-20Er.npz')
+
+V0se1, spdfse1, spdferr1, _, _ = [expdat1[x] for x in expdat1]
+V0ss, timess, spdfss = [simdat[x] for x in simdat]
+
+keepPoints = (V0ss >= 10)
+V0ss = V0ss[keepPoints]
+timess = timess[keepPoints]
+spdfss = spdfss[keepPoints]
+
+rmPoints = np.logical_not(V0se1[0] < 8.5)
+V0se1 = V0se1[0][rmPoints]
+spdfse1 = spdfse1[0][rmPoints]
+spdferr1 = spdferr1[0][rmPoints]
+
+fig, ax = plt.subplots(figsize = (3.4, 2.2))
+ax.errorbar(V0se1, spdfse1, spdferr1, marker = 'o', ls = 'none', ms = 4)
+
+holdtime = 70.
+sel_spdf = np.zeros_like(V0ss)
+for i, V0 in enumerate(V0ss):
+    ind = np.argmin(np.abs( timess[i] - holdtime ))
+    sel_spdf[i] = spdfss[i][ind]
+
+ax.plot(V0ss, sel_spdf, color = 'C0', label = 'Simulation')
+ax.set_xlim([9.5, 20.5])
+ax.set_xlabel("Lattice depth ($E_r$)", fontsize = 10)
+ax.set_ylabel("SPDF", fontsize = 10)
+#ax.set_title("35/35/x, hold for 70 ms ($u > 0$)", fontsize = 10)
+ax.tick_params(labelsize = 8)
+
+
+plt.tight_layout()
+fname = "positive-u-scan-lattice-depth"
+plt.savefig(fname + ".pdf")
+plt.savefig(fname + ".png")
